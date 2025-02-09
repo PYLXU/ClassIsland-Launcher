@@ -1,2 +1,2 @@
 # ClassIsland-Launcher
-A tool to make ClassIsland run on Linux
+A launcher for ClassIsland using Wine
