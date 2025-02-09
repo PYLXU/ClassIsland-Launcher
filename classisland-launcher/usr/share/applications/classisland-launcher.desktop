@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=ClassIsland Launcher
+Comment=Launch ClassIsland using Wine
+Exec=/usr/bin/classisland-launcher
+Icon=/usr/share/icons/classisland.png
+Terminal=false
+Categories=Utility;

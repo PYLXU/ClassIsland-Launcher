@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+# 删除开始菜单项
+remove_desktop_entry() {
+    local desktop_file="/usr/share/applications/classisland-launcher.desktop"
+    if [ -f "$desktop_file" ]; then
+        echo "Removing desktop entry..."
+        rm -f "$desktop_file"
+    fi
+}
+
+# 主逻辑
+remove_desktop_entry
+
+exit 0

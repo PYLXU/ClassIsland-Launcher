@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -e
+
+# 下载并解压ClassIsland.zip
+download_and_extract_classisland() {
+    local url="https://github.com/ClassIsland/ClassIsland/releases/download/1.5.0.4/ClassIsland.zip"
+    local zip_path="/tmp/ClassIsland.zip"
+    local install_dir="/usr/local/share/ClassIsland"
+
+    echo "Downloading ClassIsland.zip..."
+    # 使用wget的--show-progress选项显示下载进度
+    wget --show-progress -O "$zip_path" "$url" || { 
+        echo "Failed to download ClassIsland.zip. Please check the URL and your internet connection."
+        exit 1
+    }
+
+    echo "Extracting ClassIsland.zip to $install_dir..."
+    mkdir -p "$install_dir"
+    unzip -o "$zip_path" -d "$install_dir" || { 
+        echo "Failed to extract ClassIsland.zip. Please ensure the file is not corrupted."
+        exit 1
+    }
+
+    echo "ClassIsland.zip has been successfully downloaded and extracted to $install_dir."
+}
+
+# 创建开始菜单项
+create_desktop_entry() {
+    local desktop_file="/usr/share/applications/classisland-launcher.desktop"
+    if [ ! -f "$desktop_file" ]; then
+        echo "Creating desktop entry..."
+        cp /usr/share/classisland-launcher/classisland-launcher.desktop "$desktop_file"
+    fi
+}
+
+# 主逻辑
+download_and_extract_classisland
+create_desktop_entry
+
+exit 0
