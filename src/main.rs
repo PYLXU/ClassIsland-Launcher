@@ -1,4 +1,8 @@
+use native_dialog::{MessageDialog, MessageType};
+use serde_json::Value;
 use std::{
+    fs::{self, File},
+    io::{self, Write},
     process::{self, Command, Stdio},
     thread,
     time::Duration,
@@ -12,6 +16,32 @@ fn check_single_instance() {
     if !instance.is_single() {
         process::exit(0);
     }
+}
+
+// 编辑Settings.json文件
+fn edit_settings_json() -> io::Result<()> {
+    let settings_path = "./Settings.json";
+
+    // 读取文件内容
+    let settings_content = fs::read_to_string(settings_path)?;
+    let mut settings: Value = serde_json::from_str(&settings_content)?;
+
+    // 修改设置
+    settings["IsTransientDisabled"] = serde_json::Value::Bool(true);
+    settings["IsSplashEnabled"] = serde_json::Value::Bool(false);
+    settings["IsCompatibleWindowTransparentEnabled"] = serde_json::Value::Bool(true);
+
+    // 写回文件
+    let new_settings_content = serde_json::to_string_pretty(&settings)?;
+    let mut file = File::create(settings_path)?;
+    file.write_all(new_settings_content.as_bytes())?;
+
+    Ok(())
+}
+
+// 检查ClassIsland.exe是否存在
+fn check_classisland_exe_exists() -> bool {
+    fs::metadata("./ClassIsland.exe").is_ok()
 }
 
 // 运行wine命令
@@ -35,6 +65,22 @@ fn check_process_alive() -> bool {
 fn main() {
     check_single_instance();
 
+    // 编辑Settings.json文件
+    if let Err(e) = edit_settings_json() {
+        eprintln!("编辑Settings.json失败: {:?}", e);
+        process::exit(1);
+    }
+
+    // 检查ClassIsland.exe是否存在
+    if !check_classisland_exe_exists() {
+        let dialog = MessageDialog::new()
+            .set_type(MessageType::Info)
+            .title("ClassIsland启动器")
+            .text("启动时出错:没有找到ClassIsland.exe")
+            .show();
+        process::exit(1);
+    }
+
     // 启动主程序
     run_wine_command(&["ClassIsland.exe"]);
 
@@ -42,10 +88,14 @@ fn main() {
     let cursor_red = Cursor::new(include_bytes!("../assets/icon.png"));
     let decoder_red = png::Decoder::new(cursor_red);
     let (info_red, mut reader_red) = decoder_red.read_info().unwrap();
-    let mut buf_red = vec![0;info_red.buffer_size()];
+    let mut buf_red = vec![0; info_red.buffer_size()];
     reader_red.next_frame(&mut buf_red).unwrap();
 
-    let icon_red = IconSource::Data{data: buf_red, height: 32, width: 32};
+    let icon_red = IconSource::Data {
+        data: buf_red,
+        height: 32,
+        width: 32,
+    };
 
     let mut tray = TrayItem::new("ClassIsland", icon_red).unwrap();
 

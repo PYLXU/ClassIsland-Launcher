@@ -1,0 +1,9 @@
+Package: classisland-launcher
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends: wine, wine-mono, ttf-mscorefonts-installer, libgtk-3-0
+Maintainer: PYLXU <epylxu@outlook.com>
+Description: A launcher for ClassIsland using Wine
+ This package provides a convenient way to launch ClassIsland using Wine.
