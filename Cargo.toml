@@ -1,0 +1,10 @@
+[package]
+name = "classisland-launcher"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sysinfo = "0.29.11"
+tray-item = {version = "0.10.0" , features = ["ksni"]}
+single-instance = "0.3"
+png = "0.16.8"
