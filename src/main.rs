@@ -1,4 +1,3 @@
-use native_dialog::{MessageDialog, MessageType};
 use serde_json::Value;
 use std::{
     fs::{self, File},
@@ -68,16 +67,6 @@ fn main() {
     // 编辑Settings.json文件
     if let Err(e) = edit_settings_json() {
         eprintln!("编辑Settings.json失败: {:?}", e);
-        process::exit(1);
-    }
-
-    // 检查ClassIsland.exe是否存在
-    if !check_classisland_exe_exists() {
-        let dialog = MessageDialog::new()
-            .set_type(MessageType::Info)
-            .title("ClassIsland启动器")
-            .text("启动时出错:没有找到ClassIsland.exe")
-            .show();
         process::exit(1);
     }
 
